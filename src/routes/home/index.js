@@ -2,70 +2,44 @@ import { h, Component } from 'preact';
 import style from './style';
 
 export default class Home extends Component {
-	
-	registerUser = () => {
-		let registrationPackage = {
-			email: this.state.email,
-			password: this.state.password,
-			password_confirmation: this.state.passwordConfirm,
-			name: this.state.name,
-			team_name: this.state.teamName,
-			confirm_success_url: 'http://localhost:8080'
-		};
 
-		fetch('http://localhost:3000/auth', {
+	registerAdmin = (e) => {
+		e.preventDefault();
+		const adminForm = document.getElementById('adminRegisterForm');
+		const formData = this.formToJSON(adminForm.elements);
+		formData['confirm_success_url'] = 'http://localhost:8080';
+		const jsonFormData = JSON.stringify(formData);
+
+		fetch('http://localhost:3000/admin_auth', {
 		  method: 'POST',
 		  headers: {
 		    Accept: 'application/json',
 		    'Content-Type': 'application/json'
 		  },
-		  body: JSON.stringify(registrationPackage) });
+		  body: jsonFormData });
 	}
 
-	setName = (e) => {
-		this.setState( { name: e.target.value } );
-	}
+	formToJSON = (elements) => [].reduce.call(elements, (data, element) => {
+		if (this.isValidElement(element)) {
+			data[element.name] = element.value;
+		}
+		return data;	  
+	}, {});
 
-	setTeamName = (e) => {
-		this.setState( { teamName: e.target.value } );
-	}
-
-	setEmail = (e) => {
-		// TODO move into component that checks for valid email format
-		this.setState( { email: e.target.value } );
-	}
-
-	setPassword = (e) => {
-		// TODO move into component that checks for valid password requirements
-		this.setState( { password: e.target.value } );
-	}
-
-	setPasswordConfirm = (e) => {
-		// TODO move into component from the above 'TODO'. Also, check that passwords match
-		this.setState( { passwordConfirm: e.target.value } );
-	}
-
-	constructor(){
-		super();
-		this.state = {
-			name: '',
-			teamName: '',
-			email: '',
-			password: '',
-			passwordConfirm: ''
-		};
-	}
+	isValidElement = (element) => (element.name && element.value);
 
 	render() {
 		return (
 			<div class={style.home}>
-				<h1>Register a new User</h1>
-				<input type="text" placeholder="Name" onBlur={this.setName} />
-				<input type="text" placeholder="Team Name" onBlur={this.setTeamName} />
-				<input type="text" placeholder="Email" onBlur={this.setEmail}>Email</input>
-				<input type="text" placeholder="Password" onBlur={this.setPassword}>Password</input>
-				<input type="text" placeholder="Confirm Password" onBlur={this.setPasswordConfirm}>Confirm Password</input>
-				<button onClick={this.registerUser}>Register</button>
+				<h1>Register your team manager account</h1>
+				<form id="adminRegisterForm" onSubmit={this.registerAdmin}>
+					<input type="text" placeholder="Name" name="name" /><br />
+					<input type="text" placeholder="Team Name" name="team_name" /><br />
+					<input type="text" placeholder="Email" name="email" /><br />
+					<input type="password" placeholder="Password" name="password" /><br />
+					<input type="password" placeholder="Confirm Password" name="password_confirmation" /><br />
+					<input type="submit" value="Submit" />
+				</form>
 			</div>
 		);
 	}
