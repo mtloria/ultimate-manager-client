@@ -31,15 +31,42 @@ export default class Home extends Component {
 	render() {
 		return (
 			<div class={style.home}>
-				<h1>Register your team manager account</h1>
-				<form id="adminRegisterForm" onSubmit={this.registerAdmin}>
-					<input type="text" placeholder="Name" name="name" /><br />
-					<input type="text" placeholder="Team Name" name="team_name" /><br />
-					<input type="text" placeholder="Email" name="email" /><br />
-					<input type="password" placeholder="Password" name="password" /><br />
-					<input type="password" placeholder="Confirm Password" name="password_confirmation" /><br />
-					<input type="submit" value="Submit" />
-				</form>
+				<div class={style.registerForm}>
+					<ul class={style.tabGroup}>
+						<li class={style.active}><a href="#register">Sign Up</a></li>
+						<li class={style.tab}><a href="#login">Log In</a></li>
+					</ul>
+					<div class={style.tabContent}>
+						<div>
+							<h1 class={style.tabHeaderText}>Register your team manager account</h1>
+						</div>
+						<form id="adminRegisterForm" onSubmit={this.registerAdmin}>
+							<div class={style.topRow}>
+								<div class={style.fieldWrap}>
+									<label>Name</label>
+									<input type="text" required autocomplete="off" name="name" />
+								</div>
+								<div class={style.fieldWrap}>
+									<label>Team Name</label>
+									<input type="text" required autocomplete="off" name="team_name" />
+								</div>
+							</div>
+							<div class={style.fieldWrap}>
+								<label>Email Address</label>
+								<input type="email" required autocomplete="off" name="email" />
+							</div>
+							<div class={style.fieldWrap}>
+								<label>Password</label>
+								<input type="password" required autocomplete="off" name="password" />
+							</div>
+							<div class={style.fieldWrap}>
+								<label>Confirm Password</label>
+								<input type="password" required autocomplete="off" name="password_confirmation" />
+							</div>
+							<button type="submit" class={[style.button, style.buttonBlock].join(' ')}>Get Started</button>
+						</form>
+					</div>
+				</div>
 			</div>
 		);
 	}
