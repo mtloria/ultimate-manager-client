@@ -23,20 +23,77 @@ export default class Home extends Component {
 		if (this.isValidElement(element)) {
 			data[element.name] = element.value;
 		}
-		return data;	  
+		return data;
 	}, {});
 
 	isValidElement = (element) => (element.name && element.value);
+
+	componentDidMount = () => {
+		const inputs = document.querySelectorAll('form input');
+		const events = ['keyup', 'blur', 'focus'];
+		const activeClassName = style.active;
+		const highlightClassName = style.highlight;
+
+		events.forEach((event) => {
+			inputs.forEach((input) => {
+				const label = input.previousElementSibling;
+				input.addEventListener('keyup', () => {
+					if (input.value === '') {
+						label.classList.remove(activeClassName, highlightClassName);
+					}
+					else {
+						label.classList.add(activeClassName, highlightClassName);
+					}
+				});
+				input.addEventListener('blur', () => {
+					if (input.value === '') {
+						label.classList.remove(activeClassName, highlightClassName);
+					}
+					else {
+						label.classList.remove(highlightClassName);
+					}
+				});
+				input.addEventListener('focus', () => {
+					if (input.value === '') {
+						label.classList.remove(highlightClassName);
+					}
+					else if (input.value !== '') {
+						label.classList.add(highlightClassName);
+					}
+				});
+			});
+		});
+		
+		const tabLinks = document.querySelectorAll('.tab a');
+		tabLinks.forEach((tabLink) => {
+			tabLink.addEventListener('click', (e) => {
+				e.preventDefault();
+
+				const tab = tabLink.parentElement;
+				tab.classList.add(activeClassName);
+				if (tab.id === 'loginTabLink'){
+					tab.previousElementSibling.classList.remove(activeClassName);
+					document.getElementById('registerTab').style.display = 'none';
+					document.getElementById('loginTab').style.display = 'initial';
+				}
+				else {
+					tab.nextElementSibling.classList.remove(activeClassName);
+					document.getElementById('loginTab').style.display = 'none';
+					document.getElementById('registerTab').style.display = 'initial';
+				}
+			});
+		});	
+	}
 
 	render() {
 		return (
 			<div class={style.home}>
 				<div class={style.registerForm}>
 					<ul class={style.tabGroup}>
-						<li class={style.active}><a href="#register">Sign Up</a></li>
-						<li class={style.tab}><a href="#login">Log In</a></li>
+						<li class={[style.active, 'tab'].join(' ')}><a href="#register">Sign Up</a></li>
+						<li class="tab" id="loginTabLink"><a href="#login">Log In</a></li>
 					</ul>
-					<div class={style.tabContent}>
+					<div id="registerTab">
 						<div>
 							<h1 class={style.tabHeaderText}>Register your team manager account</h1>
 						</div>
@@ -65,6 +122,27 @@ export default class Home extends Component {
 							</div>
 							<button type="submit" class={[style.button, style.buttonBlock].join(' ')}>Get Started</button>
 						</form>
+					</div>
+					<div id="loginTab" style="display: none">
+						<div id="login">
+							<div>
+								<h1 class={style.tabHeaderText}>Welcome Back!</h1>
+							</div>
+							<form action="/" method="post">
+								<div class={style.fieldWrap}>
+									<label>Email Address</label>
+									<input type="email" required autocomplete="off" />
+								</div>
+								<div class={style.fieldWrap}>
+									<label>Password</label>
+									<input type="password" required autocomplete="off" />
+								</div>
+								<p class={style.forgotPassword}>
+									<a href="#" class={style.forgotPasswordLink}>Forgot Password?</a>
+								</p>
+								<button class={[style.button, style.buttonBlock].join(' ')}>Log In</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
